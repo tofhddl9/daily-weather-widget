@@ -11,11 +11,13 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.lgtm.default_android_project_template"
+        applicationId "com.lgtm.daily_weather_widget"
         minSdk 23
         targetSdk 31
         versionCode 1
         versionName "1.0"
+
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -28,6 +30,8 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled false
+
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -51,6 +55,7 @@ dependencies {
 
     implementation "androidx.fragment:fragment-ktx:$rootProject.fragmentVersion"
 
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$rootProject.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-process:$rootProject.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleVersion"
@@ -59,6 +64,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$rootProject.navigationVersion"
 
     implementation "com.google.dagger:hilt-android:$rootProject.hiltVersion"
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
     kapt "com.google.dagger:hilt-android-compiler:$rootProject.hiltVersion"
 
     implementation "androidx.preference:preference-ktx:$rootProject.preferenceVersion"
@@ -67,8 +73,27 @@ dependencies {
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"
     kapt "androidx.room:room-compiler:$rootProject.roomVersion"
 
+    implementation "com.google.android.gms:play-services-location:20.0.0"
+
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.0'
+
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
     // 3rd-party libs
     debugImplementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
+
+    implementation 'com.airbnb.android:lottie:3.0.7'
+
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
+    implementation "com.squareup.moshi:moshi:1.13.0"
+    implementation "com.squareup.moshi:moshi-kotlin:1.13.0"
+
+    implementation 'com.squareup.okhttp3:okhttp:3.8.0'
+    implementation "com.squareup.okhttp3:logging-interceptor:3.11.0"
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
