@@ -13,10 +13,11 @@ data class CurrentWeatherSummaryVO(
     val lastUpdate: String? = null,
 ) : WeatherItemVO
 
-internal fun WeatherVO.mapToCurrentWeatherSummaryVO() = CurrentWeatherSummaryVO(
-    temperature = current?.temperature ?: 0f,
-    description = current?.weatherMetaData?.description,
-    hourlyRain = current?.precipitation ?: 0f,
-    uvi = current?.uvi ?: 0f,
-    lastUpdate = timeToSimpleFormat(dt, "yy-MM-dd HH:mm:ss") // TODO : move to data module
-)
+//
+//internal fun WeatherVO.mapToCurrentWeatherSummaryVO() = CurrentWeatherSummaryVO(
+//    temperature = weather?.temperature ?: 0f,
+//    description = weather?.weatherMetaData?.description,
+//    hourlyRain = weather?.precipitation ?: 0f,
+//    uvi = weather?.uvi ?: 0f,
+//    lastUpdate = timeToSimpleFormat(dt, "yy-MM-dd HH:mm:ss") // TODO : move to data module
+//)

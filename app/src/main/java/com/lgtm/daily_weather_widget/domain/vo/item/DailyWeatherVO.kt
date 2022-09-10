@@ -10,7 +10,7 @@ data class DailyWeatherVO(
     val dailyWeathers: List<WeatherDataVO>? = null,
 ) : WeatherItemVO
 
-internal fun WeatherVO.mapToDailyWeatherVO() = DailyWeatherVO(
-    title = "${dailyWeathers?.size}일간의 일기예보",
-    dailyWeathers = dailyWeathers
-)
+//internal fun WeatherVO.mapToDailyWeatherVO() = DailyWeatherVO(
+//    title = "${dailyWeathers?.size}일간의 일기예보",
+//    dailyWeathers = dailyWeathers
+//)

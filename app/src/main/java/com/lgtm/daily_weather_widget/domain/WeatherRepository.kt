@@ -6,9 +6,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface WeatherRepository {
 
-    suspend fun getCurrentWeather(
+    suspend fun getWeather(
         latitude: Double,
         longitude: Double,
+        dt: Long,
         fetchFromRemote: Boolean,
     ): Flow<Response<WeatherVO>>
 

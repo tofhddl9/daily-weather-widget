@@ -1,20 +1,17 @@
 package com.lgtm.daily_weather_widget.domain.vo
 
 data class WeatherVO(
-    val dt: Long = 0,
     val timeZone: String? = null,
-    val current: WeatherDataVO? = null,
-    val dailyWeathers: List<WeatherDataVO>? = null,
-    val hourlyWeathers: List<WeatherDataVO>? = null
+    val todayWeather: WeatherDataVO? = null,
+    val yesterdayTemperature: Float = 0f,
 )
 
 data class WeatherDataVO(
     val dt: Long = 0L,
     val temperature: Float = 0f,
-    val temperatureMax: Float? = null,
-    val temperatureMin: Float? = null,
-    val precipitation: Float = 0f,
+    val feelsLike: Float= 0f,
     val uvi: Float = 0f,
+    val clouds: Int = 0,
     val weatherMetaData: WeatherMetaDataVO? = null,
 )
 

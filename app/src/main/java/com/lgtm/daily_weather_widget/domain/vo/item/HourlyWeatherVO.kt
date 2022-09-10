@@ -10,7 +10,7 @@ data class HourlyWeatherVO(
     val hourlyWeathers: List<WeatherDataVO>? = null,
 ) : WeatherItemVO
 
-internal fun WeatherVO.mapToHourlyWeatherVO() = HourlyWeatherVO(
-    title = "시간별 예보",
-    hourlyWeathers = hourlyWeathers,
-)
+//internal fun WeatherVO.mapToHourlyWeatherVO() = HourlyWeatherVO(
+//    title = "시간별 예보",
+//    hourlyWeathers = hourlyWeathers,
+//)

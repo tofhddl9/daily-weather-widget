@@ -5,15 +5,18 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
 import com.lgtm.daily_weather_widget.R
 import com.lgtm.daily_weather_widget.databinding.FragmentWeatherBinding
 import com.lgtm.daily_weather_widget.utils.delegate.viewBinding
+import com.lgtm.daily_weather_widget.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -51,54 +54,37 @@ class WeatherFragment: Fragment(R.layout.fragment_weather) {
     }
 
     private fun initViews() {
-//        val weatherAdapter = WeatherAdapter()
-//        lifecycleScope.launch {
-//            viewModel.uiState.flowWithLifecycle(lifecycle).collect {
-//                weatherAdapter.submitList(it.weatherWidgets)
-//            }
-//        }
-//
-//        with(binding.recyclerView) {
-//            adapter = weatherAdapter
-//            layoutManager = LinearLayoutManager(requireContext())
-//            addItemDecoration(SpaceItemDecoration(8, afterLast = true))
-//        }
-//
-//        with(binding.refreshLayout) {
-//            setOnRefreshListener {
-//                viewModel.onEvent(WeatherUiEvent.Refresh)
-//            }
-//        }
 
     }
 
     private fun observeViewModel() {
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                viewModel.uiState.collect { uiState ->
-//                    binding.refreshLayout.isRefreshing = false
-//
-//                    binding.loadingView.isVisible = uiState.isLoading
-//
-//                    binding.toolbar.title = uiState.location
-//
-//                    uiState.weatherState.takeIf { it != WeatherState.UNKNOWN } ?.let {
-//                        binding.weatherAnimatedBackground.run {
-//                            setAnimation(it.res)
-//                            playAnimation()
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                viewModel.errorMessages.collect { msg ->
-//                    showSnackBar(msg)
-//                }
-//            }
-//        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { uiState ->
+                    binding.loadingView.isVisible = uiState.isLoading
+
+                    binding.title.text = uiState.uiData?.title
+                    binding.address.text = uiState.uiData?.address
+                    binding.message.text = uiState.uiData?.message
+
+                    Glide.with(binding.weatherIcon)
+                        .load(uiState.uiData?.weatherIcon)
+                        .into(binding.weatherIcon)
+
+                    uiState.uiData?.mainImageRes?.let {
+                        binding.mainImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), it))
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.errorMessages.collect { msg ->
+                    showSnackBar(msg)
+                }
+            }
+        }
 
     }
 

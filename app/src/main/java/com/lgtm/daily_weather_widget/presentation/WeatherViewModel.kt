@@ -1,17 +1,13 @@
 package com.lgtm.daily_weather_widget.presentation
 
-import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lgtm.daily_weather_widget.domain.usecase.FetchLocationUseCase
 import com.lgtm.daily_weather_widget.domain.vo.WeatherVO
-import com.lgtm.daily_weather_widget.domain.vo.item.mapToCurrentWeatherSummaryVO
-import com.lgtm.daily_weather_widget.domain.vo.item.mapToDailyWeatherVO
-import com.lgtm.daily_weather_widget.domain.vo.item.mapToHourlyWeatherVO
-import com.lgtm.daily_weather_widget.domain.WeatherRepository
-import com.lgtm.daily_weather_widget.utils.LocationProvider
+import com.lgtm.daily_weather_widget.domain.usecase.FetchWeatherUseCase
+import com.lgtm.daily_weather_widget.presentation.WeatherHomeUiMapper.mapToWeatherHomeUi
 import com.lgtm.weathercaster.presentation.WeatherUiEvent
 import com.lgtm.daily_weather_widget.utils.Response
-import com.lgtm.daily_weather_widget.utils.time.SystemTimeProvider
 import com.lgtm.daily_weather_widget.utils.time.TimeProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -24,12 +20,12 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val repository: WeatherRepository,
-    private val locationProvider: LocationProvider,
-    private val timeProvider: TimeProvider = SystemTimeProvider(),
+    private val fetchWeatherUseCase: FetchWeatherUseCase,
+    private val fetchLocationUseCase: FetchLocationUseCase,
+    private val timeProvider: TimeProvider,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(WeatherUiState())
+    private val _uiState = MutableStateFlow(WeatherHomeState())
     val uiState = _uiState.asStateFlow()
 
     private val errorMessageChannel = Channel<String>()
@@ -45,92 +41,52 @@ class WeatherViewModel @Inject constructor(
 
     fun getCurrentWeather(fetchFromRemote: Boolean = false) {
         viewModelScope.launch {
-            when (val location = locationProvider.getCurrentLocation()) {
-                is Response.Success -> {
-                    location.data?.also {
-                        updateLocationInfo(it)
-                        loadWeather(it.latitude, it.longitude, true)
-                    } ?: run {
-                        // never called?
-                        onLocationLoadFailed("NEVER CALLED")
-                    }
-                }
-                else -> run {
-                    onLocationLoadFailed(location.message!!)
-                }
+            val location = fetchLocationUseCase()
+            if (location.data == null) {
+                onFetchLocationError(location.message)
+                return@launch
             }
-        }
-    }
 
-    private fun onLocationLoadFailed(msg: String) {
-        viewModelScope.launch {
-            errorMessageChannel.send(msg)
-        }
-    }
-
-    private fun updateLocationInfo(location: Location) {
-        when (val address = locationProvider.getAddress(location)) {
-            is Response.Success -> {
-                _uiState.value = _uiState.value.copy(
-                    location = address.data
-                )
-            }
-            else -> {
-                _uiState.value = _uiState.value.copy(
-                    location = "",
-                )
-                viewModelScope.launch {
-                    errorMessageChannel.send(address.message ?: "")
-                }
-            }
-        }
-    }
-
-    private suspend fun loadWeather(latitude: Double, longitude: Double, fetchFromRemote: Boolean) {
-        viewModelScope.launch {
-            repository.getCurrentWeather(latitude, longitude, true).collect { response ->
-                when(response) {
+            val now = timeProvider.getCurrentTimeMillis() / 1000
+            fetchWeatherUseCase(location.data.latitude, location.data.longitude, now).collect { weatherData ->
+                when(weatherData) {
                     is Response.Success -> {
-                        onLoadWeatherSuccess(response.data!!)
+                        onLoadWeatherSuccess(weatherData.data!!, location.data.address)
                     }
                     is Response.Error -> {
-                        onLoadWeatherFailed(response.data, response.message)
+                        onLoadWeatherFailed(weatherData.data, weatherData.message)
                     }
                     is Response.Loading -> {
-                        onLoadingWeather(response.isLoading)
+                        onLoadingWeather(weatherData.isLoading)
                     }
                 }
             }
         }
     }
 
-    private fun onLoadWeatherSuccess(data: WeatherVO) {
-        val currentTime = data.current?.dt ?: timeProvider.getCurrentTimeMillis()
-        val mainWeather = data.current?.weatherMetaData?.description ?: ""
-        val weatherState = WeatherState.UNKNOWN
-
+    private fun onLoadWeatherSuccess(data: WeatherVO, address: String?) {
+        // TODO. Update HomeUi
         _uiState.value = _uiState.value.copy(
-            weatherWidgets = listOf(
-                data.mapToCurrentWeatherSummaryVO(),
-                data.mapToHourlyWeatherVO(),
-                data.mapToDailyWeatherVO(),
-                data.mapToDailyWeatherVO(),
-            ),
-            weatherState = weatherState
+            uiData = data.mapToWeatherHomeUi(address)
         )
     }
 
     private fun onLoadWeatherFailed(data: WeatherVO?, message: String?) {
-        viewModelScope.launch {
-            errorMessageChannel.send(message ?: "")
-        }
+        onError(message ?: "Load Weather Error")
+    }
+
+    private fun onFetchLocationError(message: String?) {
+        onError(message ?: "Fetch Location Error")
     }
 
     private fun onLoadingWeather(loading: Boolean) {
-        _uiState.value = _uiState.value.copy(
-            isLoading = loading
-        )
+        _uiState.value = _uiState.value.copy(isLoading = loading)
     }
 
+    private fun onError(message: String) {
+        viewModelScope.launch {
+            errorMessageChannel.send(message)
+        }
+    }
 
 }
