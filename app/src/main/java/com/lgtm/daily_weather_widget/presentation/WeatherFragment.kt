@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.lgtm.daily_weather_widget.R
 import com.lgtm.daily_weather_widget.databinding.FragmentWeatherBinding
@@ -35,26 +36,22 @@ class WeatherFragment: Fragment(R.layout.fragment_weather) {
 
         requestPermission()
 
-        initViews()
+        initToolbar()
 
-        observeViewModel()
+        // observeViewModel()
     }
 
     private fun requestPermission() {
         permissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
-            viewModel.getCurrentWeather()
+            // viewModel.getCurrentWeather()
         }
 
         permissionLauncher.launch(arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
         ))
-    }
-
-    private fun initViews() {
-
     }
 
     private fun observeViewModel() {
@@ -86,6 +83,26 @@ class WeatherFragment: Fragment(R.layout.fragment_weather) {
             }
         }
 
+    }
+
+
+    private fun initToolbar() = with(binding.toolbar) {
+        inflateMenu(R.menu.weather_menu)
+        setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menu_setting -> {
+                    moveToSetting()
+                    return@setOnMenuItemClickListener true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
+    }
+
+    private fun moveToSetting() {
+        findNavController().navigate(WeatherFragmentDirections.actionWeatherFragmentToSettingFragment())
     }
 
 }

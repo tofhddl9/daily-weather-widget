@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="notification_onoff"
+        android:title="알림 설정하기"/>
+
+    <Preference
+        android:dependency="notification_onoff"
+        android:key="notification_time"
+        android:title="알림 시간 설정"
+        tools:summary="09:00" />
+
+</PreferenceScreen>

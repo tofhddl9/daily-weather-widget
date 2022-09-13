@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        android:key="notification"
+        android:title="알림"
+        android:icon="@drawable/ic_baseline_notifications_24"/>
+
+</PreferenceScreen>

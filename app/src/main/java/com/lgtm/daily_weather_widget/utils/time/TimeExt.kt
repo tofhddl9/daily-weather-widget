@@ -39,3 +39,7 @@ fun timeToSimpleFormat(dt: Long, pattern: String): String {
     val formatter = DateTimeFormatter.ofPattern(pattern)
     return ZonedDateTime.ofInstant(Instant.ofEpochMilli(dt), ZoneId.systemDefault()).format(formatter)
 }
+
+fun Int.to2Str(): String {
+    return String.format("%02d", this)
+}

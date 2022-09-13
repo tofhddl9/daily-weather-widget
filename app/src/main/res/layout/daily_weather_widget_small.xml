@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:layout_width="160dp"
-    android:background="#f0efcc"
+    android:background="@color/myColor"
     android:theme="@style/AppTheme.Black.AppWidgetContainer"
     android:padding="16dp"
     android:orientation="vertical">
