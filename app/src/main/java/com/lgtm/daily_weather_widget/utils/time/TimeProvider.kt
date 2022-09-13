@@ -9,6 +9,8 @@ interface TimeProvider {
 
     fun getCurrentTimeMillis(): Long
 
+    fun getSimpleTimeFormat(dt: Long): String
+
     fun getCurrentTimeInISO8601(dt: Long): String
 
     fun getMonth(dt: Long): Int

@@ -7,8 +7,12 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import com.lgtm.daily_weather_widget.utils.Response
 import java.io.IOException
@@ -57,8 +61,8 @@ class LocationProviderImpl @Inject constructor(
                     }
                     return@suspendCancellableCoroutine
                 }
-                addOnSuccessListener {
-                    cont.resume(Response.Success(it), null)
+                addOnSuccessListener { location ->
+                    cont.resume(Response.Success(location), null)
                 }
                 addOnFailureListener {
                     cont.resume(Response.Error(null, "위치정보를 얻어오는데 실패했습니다"), null)

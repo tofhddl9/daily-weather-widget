@@ -17,7 +17,11 @@ class SystemTimeProvider (
     locale: Locale = ConfigurationCompat.getLocales(Resources.getSystem().configuration).get(0),
 ) : TimeProvider {
 
-    private val format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    private val iso8601Format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+        .withLocale(locale)
+        .withZone(zoneId)
+
+    private val simpleFormat = DateTimeFormatter.ofPattern("MM/dd HH:mm")
         .withLocale(locale)
         .withZone(zoneId)
 
@@ -32,8 +36,12 @@ class SystemTimeProvider (
         return now
     }
 
+    override fun getSimpleTimeFormat(dt: Long): String {
+        return zdt(dt).format(simpleFormat)
+    }
+
     override fun getCurrentTimeInISO8601(dt: Long): String {
-        return zdt(dt).format(format)
+        return zdt(dt).format(iso8601Format)
     }
 
     override fun getMonth(dt: Long): Int {
