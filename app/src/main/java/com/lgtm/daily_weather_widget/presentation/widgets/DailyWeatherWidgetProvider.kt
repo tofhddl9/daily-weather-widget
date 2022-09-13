@@ -69,19 +69,19 @@ class DailyWeatherWidgetProvider : AppWidgetProvider() {
             }
 
             val now = timeProvider.getCurrentTimeMillis()
-            fetchWeatherUseCase(location.data.latitude, location.data.longitude, now / 1000).collect { weatherData ->
-                when (weatherData) {
-                    is Response.Success -> {
-                        weatherData.data?.let {
-                            onFetchWeatherSuccess(context, appWidgetManager, appWidgetId, it, now)
-                            Log.d("Doran", "now : ${timeProvider.getSimpleTimeFormat(now)}")
-                        }
-                    }
-                    else -> {
-                        return@collect
-                    }
-                }
-            }
+//            fetchWeatherUseCase(location.data.latitude, location.data.longitude, now / 1000).collect { weatherData ->
+//                when (weatherData) {
+//                    is Response.Success -> {
+//                        weatherData.data?.let {
+//                            onFetchWeatherSuccess(context, appWidgetManager, appWidgetId, it, now)
+//                            Log.d("Doran", "now : ${timeProvider.getSimpleTimeFormat(now)}")
+//                        }
+//                    }
+//                    else -> {
+//                        return@collect
+//                    }
+//                }
+//            }
         }
     }
 

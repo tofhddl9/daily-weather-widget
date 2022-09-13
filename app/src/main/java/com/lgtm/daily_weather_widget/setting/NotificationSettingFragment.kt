@@ -5,6 +5,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreference
 import com.lgtm.daily_weather_widget.R
 import com.lgtm.daily_weather_widget.utils.time.to2Str
 
@@ -12,23 +13,35 @@ class NotificationSettingFragment : PreferenceFragmentCompat() {
 
     private val settingPreference by lazy { SettingSharedPreference(requireContext()) }
 
+    private var notificationOnOff: SwitchPreference? = null
     private var notificationTime: Preference? = null
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.notification_setting_preference, rootKey)
 
-        findPreference<Preference>("notification_onoff")?.setOnPreferenceChangeListener { _, option ->
+        initNotificationOnOff()
+
+        initNotificationTime()
+
+        setFragmentResults()
+    }
+
+    private fun initNotificationOnOff() {
+        notificationOnOff = findPreference("notification_onoff")
+        notificationOnOff?.isChecked = settingPreference.doesNotify
+        notificationOnOff?.setOnPreferenceChangeListener { _, option ->
+            settingPreference.doesNotify = option as Boolean
             true
         }
+    }
 
+    private fun initNotificationTime() {
         notificationTime = findPreference("notification_time")
         showNotificationTime()
         notificationTime?.setOnPreferenceClickListener {
             moveToTimePickerFragment()
             true
         }
-
-        setFragmentResults()
     }
 
     private fun setFragmentResults() {
