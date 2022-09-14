@@ -1,7 +1,6 @@
 package com.lgtm.daily_weather_widget.data
 
 import com.lgtm.daily_weather_widget.domain.vo.WeatherVO
-import com.lgtm.daily_weather_widget.di.RemoteDataSource
 import com.lgtm.daily_weather_widget.domain.WeatherRepository
 import com.lgtm.daily_weather_widget.utils.Response
 import java.lang.Exception
@@ -15,7 +14,7 @@ import kotlinx.coroutines.flow.flow
 private const val ONE_DAY_IN_SEC = 60 * 60 * 24
 
 class WeatherRepositoryImpl @Inject constructor(
-    @RemoteDataSource private val weatherRemoteDataSource: WeatherDataSource,
+    private val weatherRemoteDataSource: WeatherDataSource,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : WeatherRepository {
 

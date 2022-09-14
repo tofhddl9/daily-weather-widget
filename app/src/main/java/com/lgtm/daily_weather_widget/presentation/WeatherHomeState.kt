@@ -7,7 +7,6 @@ import com.lgtm.daily_weather_widget.utils.time.SystemTimeProvider
 data class WeatherHomeState(
     val uiData: WeatherHomeUi? = null,
     val isLoading: Boolean = false,
-    val weatherState: WeatherState = WeatherState.UNKNOWN,
 )
 
 data class WeatherHomeUi(

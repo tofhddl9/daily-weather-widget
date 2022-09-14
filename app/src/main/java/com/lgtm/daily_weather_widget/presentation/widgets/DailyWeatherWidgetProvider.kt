@@ -13,11 +13,13 @@ import com.lgtm.daily_weather_widget.domain.usecase.FetchLocationUseCase
 import com.lgtm.daily_weather_widget.domain.usecase.FetchWeatherUseCase
 import com.lgtm.daily_weather_widget.domain.vo.WeatherVO
 import com.lgtm.daily_weather_widget.presentation.MainActivity
+import com.lgtm.daily_weather_widget.utils.Response
 import com.lgtm.daily_weather_widget.utils.time.TimeProvider
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 private const val FORCE_APP_WIDGET_UPDATE = "com.lgtm.daily_weather_widget.APPWIDGET_UPDATE"
@@ -66,19 +68,18 @@ class DailyWeatherWidgetProvider : AppWidgetProvider() {
             }
 
             val now = timeProvider.getCurrentTimeMillis()
-//            fetchWeatherUseCase(location.data.latitude, location.data.longitude, now / 1000).collect { weatherData ->
-//                when (weatherData) {
-//                    is Response.Success -> {
-//                        weatherData.data?.let {
-//                            onFetchWeatherSuccess(context, appWidgetManager, appWidgetId, it, now)
-//                            Log.d("Doran", "now : ${timeProvider.getSimpleTimeFormat(now)}")
-//                        }
-//                    }
-//                    else -> {
-//                        return@collect
-//                    }
-//                }
-//            }
+            fetchWeatherUseCase(location.data.latitude, location.data.longitude, now / 1000).collect { weatherData ->
+                when (weatherData) {
+                    is Response.Success -> {
+                        weatherData.data?.let {
+                            onFetchWeatherSuccess(context, appWidgetManager, appWidgetId, it, now)
+                        }
+                    }
+                    else -> {
+                        return@collect
+                    }
+                }
+            }
         }
     }
 
@@ -117,6 +118,21 @@ class DailyWeatherWidgetProvider : AppWidgetProvider() {
             setTextViewText(R.id.last_update, smallWidgetModel.lastUpdateDate)
         }
 
+        val middleWidgetModel = WeatherWidgetUi(
+            title = mapToWeatherTitle(weatherData.todayWeather.temperature, weatherData.yesterdayTemperature),
+            message = "${weatherData.yesterdayTemperature.roundToInt()}\u00B0C     >>     ${weatherData.todayWeather.temperature.roundToInt()}\u00B0C",
+            mainImageRes = mapToWeatherMainImageRes(weatherData.todayWeather.temperature, weatherData.yesterdayTemperature),
+            lastUpdateDate = timeProvider.getCurrentTimeInISO8601(currentTimeInMillis)
+        )
+        val middleView = RemoteViews(context.packageName, R.layout.daily_weather_widget_middle).apply {
+            setOnClickPendingIntent(R.id.root, pendingIntent)
+            setOnClickPendingIntent(R.id.refresh, refreshPendingIntent)
+            setTextViewText(R.id.weather_title, middleWidgetModel.title)
+            setTextViewText(R.id.weather_temperature, middleWidgetModel.message)
+            setImageViewResource(R.id.weather_main_image, middleWidgetModel.mainImageRes)
+            setTextViewText(R.id.last_update, smallWidgetModel.lastUpdateDate)
+        }
+
         val wideWidgetModel = WeatherWidgetUi(
             title = mapToWeatherTitle(weatherData.todayWeather.temperature, weatherData.yesterdayTemperature),
             message = "${weatherData.yesterdayTemperature.roundToInt()}\u00B0C     >>     ${weatherData.todayWeather.temperature.roundToInt()}\u00B0C",
@@ -133,14 +149,15 @@ class DailyWeatherWidgetProvider : AppWidgetProvider() {
         }
 
         val viewMapping: Map<SizeF, RemoteViews> = mapOf(
-            SizeF(150f, 100f) to smallView,
-            SizeF(215f, 100f) to wideView,
+            SizeF(148f, 100f) to smallView,
+            SizeF(222f, 100f) to middleView,
+            SizeF(296f, 100f) to wideView,
         )
 
         val remoteViews = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             RemoteViews(viewMapping)
         } else {
-            wideView
+            middleView
         }
 
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews)

@@ -34,7 +34,7 @@ class WeatherViewModel @Inject constructor(
     fun onEvent(event: WeatherUiEvent) {
         when (event) {
             WeatherUiEvent.Refresh -> {
-                // getCurrentWeather(fetchFromRemote = true)
+                getCurrentWeather(fetchFromRemote = true)
             }
         }
     }

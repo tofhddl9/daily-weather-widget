@@ -38,14 +38,14 @@ class WeatherFragment: Fragment(R.layout.fragment_weather) {
 
         initToolbar()
 
-        // observeViewModel()
+        observeViewModel()
     }
 
     private fun requestPermission() {
         permissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
-            // viewModel.getCurrentWeather()
+            viewModel.getCurrentWeather()
         }
 
         permissionLauncher.launch(arrayOf(
@@ -105,29 +105,4 @@ class WeatherFragment: Fragment(R.layout.fragment_weather) {
         findNavController().navigate(WeatherFragmentDirections.actionWeatherFragmentToSettingFragment())
     }
 
-}
-
-//TODO : modify to domain vo
-enum class WeatherState(
-    val res: Int,
-) {
-//    SUNNY_DAY(R.raw.day_piece),
-//    SUNNY_NIGHT(R.raw.night_piece),
-//    RAINY(R.raw.day_rainy),
-//    SNOWY(R.raw.day_snow),
-    UNKNOWN(-1);
-//
-//    companion object {
-//        fun getStateFrom(weather: String, isNight: Boolean): WeatherState {
-//            return when (weather) {
-//                "Rain" -> RAINY
-//                "Snow" -> SNOWY
-//                // "Clouds" ->
-//                else -> {
-//                    if (isNight) SUNNY_NIGHT
-//                    else SUNNY_DAY
-//                }
-//            }
-//        }
-//    }
 }
