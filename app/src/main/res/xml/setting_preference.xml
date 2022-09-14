@@ -2,9 +2,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Preference
-        android:key="notification"
-        android:title="알림"
-        android:icon="@drawable/ic_baseline_notifications_24"/>
+    <PreferenceCategory
+        android:title="기본설정">
+
+        <Preference
+            android:key="notification"
+            android:title="알림"
+            android:icon="@drawable/ic_baseline_notifications_24"
+            app:allowDividerBelow="true"
+            app:allowDividerAbove="true"/>
+    </PreferenceCategory>
 
 </PreferenceScreen>
