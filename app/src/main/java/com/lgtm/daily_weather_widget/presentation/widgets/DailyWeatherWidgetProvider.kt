@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import android.util.SizeF
 import android.widget.RemoteViews
 import com.lgtm.daily_weather_widget.R
@@ -14,13 +13,11 @@ import com.lgtm.daily_weather_widget.domain.usecase.FetchLocationUseCase
 import com.lgtm.daily_weather_widget.domain.usecase.FetchWeatherUseCase
 import com.lgtm.daily_weather_widget.domain.vo.WeatherVO
 import com.lgtm.daily_weather_widget.presentation.MainActivity
-import com.lgtm.daily_weather_widget.utils.Response
 import com.lgtm.daily_weather_widget.utils.time.TimeProvider
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 private const val FORCE_APP_WIDGET_UPDATE = "com.lgtm.daily_weather_widget.APPWIDGET_UPDATE"

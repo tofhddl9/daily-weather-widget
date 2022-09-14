@@ -12,7 +12,7 @@ class SettingSharedPreference(context: Context) {
         set(value) = prefs.edit().putBoolean(KEY_PREF_NOTIFICATION_ON_OFF, value).apply()
 
     var notificationHour: Int
-        get() = prefs.getInt(KEY_PREF_NOTIFICATION_HOUR, 0)
+        get() = prefs.getInt(KEY_PREF_NOTIFICATION_HOUR, 8)
         set(value) = prefs.edit().putInt(KEY_PREF_NOTIFICATION_HOUR, value).apply()
 
     var notificationMinute: Int

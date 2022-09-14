@@ -11,8 +11,8 @@ import java.util.*
 class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val now = Calendar.getInstance()
-        val hour = now.get(Calendar.HOUR)
+        val now = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+        val hour = now.get(Calendar.HOUR_OF_DAY)
         val minute = now.get(Calendar.MINUTE)
 
         return TimePickerDialog(requireContext(), this, hour, minute, true)
